@@ -1,7 +1,11 @@
+import 'package:app_pelis/src/providers/peliculas_provider.dart';
 import 'package:app_pelis/src/widgets/card_swiper_widget.dart';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  final peliculaProvider = new PeliculaProvider();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +25,16 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _swiperTarjetas() {
-    return CardSwiper(peliculas: [1, 2, 3, 4, 5]);
+    return FutureBuilder(
+      future: peliculaProvider.getEnCines(),
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        if (snapshot.hasData) {
+          return CardSwiper(peliculas: snapshot.data);
+        } else {
+          return Container(
+              height: 400.0, child: Center(child: CircularProgressIndicator()));
+        }
+      },
+    );
   }
 }
