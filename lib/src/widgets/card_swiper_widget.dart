@@ -1,5 +1,6 @@
 import 'package:app_pelis/src/models/pelicula_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardSwiper extends StatelessWidget {
@@ -12,7 +13,7 @@ class CardSwiper extends StatelessWidget {
     //con este metodo obtenemos la informacion del tamaño de la pantalla
     final _screenSize = MediaQuery.of(context).size;
     return Container(
-      child: new Swiper(
+      child: Swiper(
         layout: SwiperLayout.STACK,
         itemWidth: _screenSize.width * 0.7,
         itemHeight: _screenSize.height * 0.5,

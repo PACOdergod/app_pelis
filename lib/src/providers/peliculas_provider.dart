@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'package:app_pelis/src/models/pelicula_model.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -8,12 +8,25 @@ class PeliculaProvider {
   String _url = 'api.themoviedb.org';
   String _language = 'es-ES';
 
-  Future<List<Pelicula>> getEnCines() async {
-    final url = Uri.https(_url, '/3/movie/now_playing', {
-      'api_key': _apikey,
-      'language': _language,
-    });
+  int _popularesPage = 2;
+  bool _cargando = false;
 
+  List<Pelicula> _populares = new List();
+
+  final _popularesStreamController =
+      StreamController<List<Pelicula>>.broadcast();
+
+  Function(List<Pelicula>) get popularesSink =>
+      _popularesStreamController.sink.add;
+
+  Stream<List<Pelicula>> get popularesStream =>
+      _popularesStreamController.stream;
+
+  void disposesStreams() {
+    _popularesStreamController?.close();
+  }
+
+  Future<List<Pelicula>> _procesarRespuesta(Uri url) async {
     final resp = await http.get(url);
     final decodedData = json.decode(resp.body);
 
@@ -22,17 +35,35 @@ class PeliculaProvider {
     return peliculas.items;
   }
 
-  Future<List<Pelicula>> getPopulares() async {
-    final urlf = Uri.https(_url, '/3/movie/popular', {
+  Future<List<Pelicula>> getEnCines() async {
+    final url = Uri.https(_url, '/3/movie/now_playing', {
       'api_key': _apikey,
       'language': _language,
     });
 
-    final resp = await http.get(urlf);
-    final decodedData = json.decode(resp.body);
+    return await _procesarRespuesta(url);
+  }
 
-    final peliculas = new Peliculas.fromJsonList(decodedData['results']);
+  Future<List<Pelicula>> getPopulares() async {
+    if (_cargando) return [];
+    _cargando = true;
 
-    return peliculas.items;
+    _popularesPage++;
+
+    final url = Uri.https(_url, '/3/movie/popular', {
+      'api_key': _apikey,
+      'language': _language,
+      'page': _popularesPage.toString(),
+    });
+
+    final resp = await _procesarRespuesta(url);
+
+    _populares.addAll(resp);
+
+    popularesSink(_populares);
+
+    _cargando = false;
+
+    return resp;
   }
 }
