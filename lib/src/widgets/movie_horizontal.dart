@@ -1,4 +1,5 @@
 import 'package:app_pelis/src/models/pelicula_model.dart';
+import 'package:app_pelis/src/pages/pelicula_detalle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -36,7 +37,8 @@ class MovieHorizontal extends StatelessWidget {
   }
 
   Widget _tarjeta(BuildContext context, Pelicula pelicula) {
-    return Container(
+    //Diseño de las terjetas
+    final tarjeta = Container(
       margin: EdgeInsets.only(right: 15.0),
       child: Column(
         children: <Widget>[
@@ -60,6 +62,12 @@ class MovieHorizontal extends StatelessWidget {
         ],
       ),
     );
+
+    return GestureDetector(
+        child: tarjeta,
+        onTap: () {
+          Navigator.of(context).pushNamed('/detalle', arguments: pelicula);
+        });
   }
 
   List<Widget> _tarjetas(context) {
