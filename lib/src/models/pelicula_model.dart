@@ -71,6 +71,14 @@ class Pelicula {
     }
   }
 
+  getBackgroundImage() {
+    if (posterPath == null) {
+      return 'https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101027/112815900-no-image-available-icon-flat-vector.jpg';
+    } else {
+      return 'https://image.tmdb.org/t/p/w500/$backdropPath';
+    }
+  }
+
   getTitle() {
     if (title == null) {
       return 'no hay titulo';
