@@ -64,7 +64,6 @@ class PeliculaProvider {
     popularesSink(_populares);
 
     _cargando = false;
-
     return resp;
   }
 
@@ -89,5 +88,12 @@ class PeliculaProvider {
     final cast = new Cast.fromJsonList(jsonData['cast']);
 
     return cast.actores;
+  }
+
+  Future<List<Pelicula>> buscar(String query) async {
+    final url = Uri.https(_url, '/3/search/movie',
+        {'api_key': _apikey, 'language': _language, 'query': query});
+
+    return await _procesarRespuesta(url);
   }
 }
