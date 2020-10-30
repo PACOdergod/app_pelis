@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_pelis/src/models/actores_model.dart';
 import 'package:app_pelis/src/models/pelicula_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -63,7 +64,36 @@ class PeliculaProvider {
     popularesSink(_populares);
 
     _cargando = false;
-
     return resp;
+  }
+
+  Future<List<Actor>> getCast(String peliId) async {
+    final url = Uri.https(_url, '/3/movie/$peliId/credits', {
+      'api_key': _apikey,
+    });
+
+    //print(url);
+
+    final resp = await http.get(url);
+    final encodeFirst = json.encode(resp.body);
+    final decodedData = json.decode(encodeFirst);
+
+    //print(decodedData);
+
+    String jsonsDataString = decodedData.toString();
+    final jsonData = jsonDecode(jsonsDataString);
+
+    //print(jsonsDataString);
+
+    final cast = new Cast.fromJsonList(jsonData['cast']);
+
+    return cast.actores;
+  }
+
+  Future<List<Pelicula>> buscar(String query) async {
+    final url = Uri.https(_url, '/3/search/movie',
+        {'api_key': _apikey, 'language': _language, 'query': query});
+
+    return await _procesarRespuesta(url);
   }
 }

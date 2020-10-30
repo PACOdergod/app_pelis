@@ -1,4 +1,5 @@
 import 'package:app_pelis/src/models/pelicula_model.dart';
+import 'package:app_pelis/src/pages/pelicula_detalle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -36,17 +37,22 @@ class MovieHorizontal extends StatelessWidget {
   }
 
   Widget _tarjeta(BuildContext context, Pelicula pelicula) {
-    return Container(
+    pelicula.idUnico = '${pelicula.id}-populares';
+    //Diseño de las terjetas
+    final tarjeta = Container(
       margin: EdgeInsets.only(right: 15.0),
       child: Column(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(30.0),
-            child: FadeInImage(
-              placeholder: AssetImage('assets/images/no-image.jpg'),
-              image: NetworkImage(pelicula.getPosterImg()),
-              fit: BoxFit.cover,
-              height: 100.0,
+          Hero(
+            tag: pelicula.idUnico,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30.0),
+              child: FadeInImage(
+                placeholder: AssetImage('assets/images/no-image.jpg'),
+                image: NetworkImage(pelicula.getPosterImg()),
+                fit: BoxFit.cover,
+                height: 100.0,
+              ),
             ),
           ),
           SizedBox(
@@ -60,6 +66,13 @@ class MovieHorizontal extends StatelessWidget {
         ],
       ),
     );
+
+    return GestureDetector(
+        child: tarjeta,
+        onTap: () {
+          Navigator.of(context).pushNamed('/detalle', arguments: pelicula);
+          print(pelicula);
+        });
   }
 
   List<Widget> _tarjetas(context) {

@@ -1,4 +1,5 @@
 import 'package:app_pelis/src/providers/peliculas_provider.dart';
+import 'package:app_pelis/src/search/search_delegate.dart';
 import 'package:app_pelis/src/widgets/card_swiper_widget.dart';
 import 'package:app_pelis/src/widgets/movie_horizontal.dart';
 
@@ -10,13 +11,18 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    peliculaProvider.getPopulares();
     return Scaffold(
         appBar: AppBar(
           title: Text('Peliculas'),
           backgroundColor: Colors.blueGrey,
           actions: [
-            IconButton(icon: Icon(Icons.add_circle_outline), onPressed: null)
+            IconButton(
+                icon: Icon(
+                  Icons.search,
+                ),
+                onPressed: () {
+                  showSearch(context: context, delegate: SearchData());
+                }),
           ],
         ),
         body: Container(
